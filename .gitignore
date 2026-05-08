@@ -1,0 +1,64 @@
+# ── Environment & secrets ─────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# ── Node / Next.js ────────────────────────────────────
+node_modules/
+.next/
+out/
+build/
+dist/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Python ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+*.egg
+.eggs/
+pip-log.txt
+
+# ── Conda / virtualenv ────────────────────────────────
+.venv/
+venv/
+env/
+.conda/
+
+# ── Playwright ────────────────────────────────────────
+/test-results/
+/playwright-report/
+/tmp/keyagent_pg_error.png
+/tmp/
+
+# ── Convex ────────────────────────────────────────────
+.convex/
+convex/_generated/
+
+# ── OS ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ───────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ──────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── Misc ──────────────────────────────────────────────
+*.pem
+.turbo/
+coverage/

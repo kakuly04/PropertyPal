@@ -1,0 +1,75 @@
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.5
+aiohttp-retry==2.9.1
+aiosignal==1.4.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_anyio_1774359453/work
+attrs==26.1.0
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1776866578774/work/certifi
+cffi==2.0.0
+charset-normalizer==3.4.7
+click @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_click_1777219902/work
+cryptography==48.0.0
+distro==1.9.0
+exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongroup_1763918002538/work
+fastapi==0.136.1
+frozenlist==1.8.0
+google-api-core==2.30.3
+google-api-python-client==2.196.0
+google-auth==2.52.0
+google-auth-httplib2==0.4.0
+google-auth-oauthlib==1.4.0
+googleapis-common-protos==1.75.0
+griffelib==2.0.2
+h11 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h11_1767729720/work
+h2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h2_1756364871/work
+hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
+httpcore @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_httpcore_1745602916/work
+httplib2==0.31.2
+httpx @ file:///home/conda/feedstock_root/build_artifacts/httpx_1733663348460/work
+httpx-sse==0.4.3
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_idna_1776947141/work
+jiter==0.14.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+mcp==1.27.0
+multidict==6.7.1
+oauthlib==3.3.1
+openai==2.36.0
+openai-agents==0.17.0
+packaging==26.0
+propcache==0.4.1
+proto-plus==1.28.0
+protobuf==7.34.1
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
+pydantic==2.13.4
+pydantic-settings==2.14.1
+pydantic_core==2.46.4
+PyJWT==2.12.1
+pyparsing==3.3.2
+python-dotenv==1.2.2
+python-multipart==0.0.27
+referencing==0.37.0
+requests==2.33.1
+requests-oauthlib==2.0.0
+resend==2.30.0
+rpds-py==0.30.0
+setuptools==82.0.1
+sniffio @ file:///home/conda/feedstock_root/build_artifacts/sniffio_1762941432086/work
+sse-starlette==3.4.2
+starlette==1.0.0
+tqdm==4.67.3
+twilio==9.10.9
+types-requests==2.33.0.20260508
+typing-inspection==0.4.2
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_typing_extensions_1756220668/work
+uritemplate==4.2.0
+urllib3==2.7.0
+uvicorn @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_uvicorn_1776948607/work
+websockets==16.0
+wheel==0.46.3
+yarl==1.23.0
