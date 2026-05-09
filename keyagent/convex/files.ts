@@ -13,7 +13,6 @@ export const createFileRecord = mutation({
   args: {
     orgId: v.id("orgs"),
     storageId: v.string(),
-    externalUrl: v.optional(v.string()),
     uploadedByMembershipId: v.optional(v.id("memberships")),
     propertyId: v.optional(v.id("properties")),
     taskId: v.optional(v.id("tasks")),

@@ -1,1 +1,0 @@
-"""InvoiceAgent implementation."""
