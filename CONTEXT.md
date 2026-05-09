@@ -52,3 +52,24 @@
 
 ## Delivery Objective (v1)
 - End-to-end operation where inbound WhatsApp/email events are triaged by orchestrator, delegated to specialist agents, actioned with approval gates, and reflected in real time in the dashboard.
+
+## Team Handoff
+- Teammate/Codex coordination notes live in `TEAMMATE_CODEX_HANDOFF.md`.
+
+## Implementation Log
+
+### 2026-05-09
+- Created the `keyagent/` Next.js app scaffold with Convex initialized.
+- Expanded `keyagent/convex/schema.ts` from the starter tables into the shared v1 multi-agent schema.
+- Added shared data domains for org tenancy, memberships, files, approvals, agent runs, audit logs, agent tasks, conversations, and messages.
+- Expanded operational tables for contacts, properties, leases, tasks, and invoices with org scoping, statuses, timestamps, extraction fields, and query indexes.
+- Added Convex modules for invoice/contract-agent foundation work:
+  - `keyagent/convex/files.ts`
+  - `keyagent/convex/invoices.ts`
+  - `keyagent/convex/leases.ts`
+  - `keyagent/convex/approvals.ts`
+  - `keyagent/convex/agentRuns.ts`
+  - `keyagent/convex/auditLogs.ts`
+- Invoice flow now has database functions for receipt file metadata, invoice creation, extraction updates, approval submission, approval/rejection, reimbursement, and invoice listing.
+- Contract flow now has database functions for lease PDF records, lease extraction updates, review submission, extraction confirmation, lease listing, and expiring lease lookup.
+- Shared audit and agent run helpers are in place so Python agents can log execution and business actions consistently.
