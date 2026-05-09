@@ -237,7 +237,6 @@ export const markInvoiceReimbursed = mutation({
   args: {
     invoiceId: v.id("invoices"),
     reimbursedAt: v.optional(v.string()),
-    queueTenantConfirmation: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const invoice = await ctx.db.get(args.invoiceId);
@@ -264,43 +263,7 @@ export const markInvoiceReimbursed = mutation({
       createdAt: now,
     });
 
-    let commsTaskId = null;
-    if (args.queueTenantConfirmation === true && invoice.submittedByContactId !== undefined) {
-      commsTaskId = await ctx.db.insert("agentTasks", {
-        orgId: invoice.orgId,
-        assignedAgent: "CommsAgent",
-        eventId: `invoice-reimbursed:${args.invoiceId}:${now}`,
-        source: "dashboard",
-        type: "send_invoice_reimbursement_confirmation",
-        status: "queued",
-        propertyId: invoice.propertyId,
-        taskId: invoice.taskId,
-        payload: {
-          invoiceId: args.invoiceId,
-          recipientContactId: invoice.submittedByContactId,
-          amount: invoice.amount,
-          currency: invoice.currency,
-          vendorName: invoice.vendorName,
-          reimbursedAt: args.reimbursedAt ?? new Date(now).toISOString(),
-        },
-        attempts: 0,
-        createdAt: now,
-        updatedAt: now,
-      });
-
-      await ctx.db.insert("auditLogs", {
-        orgId: invoice.orgId,
-        actorType: "system",
-        action: "invoice.reimbursement_confirmation_queued",
-        targetTable: "invoices",
-        targetId: args.invoiceId,
-        summary: "Queued CommsAgent confirmation for reimbursed invoice.",
-        metadata: { commsTaskId },
-        createdAt: now,
-      });
-    }
-
-    return { invoiceId: args.invoiceId, commsTaskId };
+    return args.invoiceId;
   },
 });
 

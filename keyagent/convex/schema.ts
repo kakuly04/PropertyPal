@@ -74,7 +74,6 @@ export default defineSchema({
   files: defineTable({
     orgId: v.id("orgs"),
     storageId: v.string(),
-    externalUrl: v.optional(v.string()),
     uploadedByMembershipId: v.optional(v.id("memberships")),
     propertyId: v.optional(v.id("properties")),
     taskId: v.optional(v.id("tasks")),
@@ -227,53 +226,6 @@ export default defineSchema({
     .index("by_orgId_and_taskId", ["orgId", "taskId"])
     .index("by_orgId_and_status", ["orgId", "status"])
     .index("by_orgId_and_extractionStatus", ["orgId", "extractionStatus"]),
-
-  relistingDrafts: defineTable({
-    orgId: v.id("orgs"),
-    leaseId: v.id("leases"),
-    propertyId: v.id("properties"),
-    taskId: v.optional(v.id("tasks")),
-    requestedByRunId: v.optional(v.id("agentRuns")),
-    approvalId: v.optional(v.id("approvals")),
-    status: v.union(
-      v.literal("draft"),
-      v.literal("pending_approval"),
-      v.literal("approved"),
-      v.literal("manually_listed"),
-      v.literal("cancelled"),
-    ),
-    headline: v.string(),
-    address: v.string(),
-    listingType: v.union(v.literal("for_rent"), v.literal("room_for_rent")),
-    rentAmount: v.number(),
-    currency: v.string(),
-    availableFrom: v.optional(v.string()),
-    bedrooms: v.optional(v.number()),
-    bathrooms: v.optional(v.number()),
-    floorArea: v.optional(v.number()),
-    furnishing: v.optional(v.string()),
-    description: v.string(),
-    additionalNotes: v.optional(v.string()),
-    photoFileIds: v.optional(v.array(v.id("files"))),
-    copyFields: v.object({
-      headline: v.string(),
-      address: v.string(),
-      listingType: v.string(),
-      rent: v.string(),
-      availability: v.optional(v.string()),
-      details: v.string(),
-      description: v.string(),
-      fullListing: v.string(),
-    }),
-    manuallyListedAt: v.optional(v.number()),
-    manuallyListedByMembershipId: v.optional(v.id("memberships")),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index("by_orgId", ["orgId"])
-    .index("by_orgId_and_leaseId", ["orgId", "leaseId"])
-    .index("by_orgId_and_propertyId", ["orgId", "propertyId"])
-    .index("by_orgId_and_status", ["orgId", "status"]),
 
   approvals: defineTable({
     orgId: v.id("orgs"),
