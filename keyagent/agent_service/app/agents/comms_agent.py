@@ -10,7 +10,7 @@ def build_comms_agent() -> Agent:
     settings = get_settings()
 
     return Agent(
-        name="CommunicationsAgent",
+        name="CommsAgent",
         model=settings.keyagent_agent_model,
         instructions=(
             "You coordinate communication for KeyAgent. Use the smallest appropriate channel: "

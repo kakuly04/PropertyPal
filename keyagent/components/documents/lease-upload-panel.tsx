@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { CheckCircle2, FileUp, Loader2, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/ui/status-pill";
@@ -17,18 +19,22 @@ const tenantsByProperty: Record<string, string[]> = {
 };
 
 export function LeaseUploadPanel({ compact = false }: { compact?: boolean }) {
+  const overview = useQuery(api.dashboard.getOverview, { orgSlug: "demo" });
+  const liveProperties = useQuery(api.dashboard.listPropertiesForDashboard, { orgSlug: "demo" });
+  const createFileRecord = useMutation(api.files.createFileRecord);
+  const propertyRows = liveProperties ?? properties;
   const [propertyId, setPropertyId] = useState(properties[0].id);
   const [tenant, setTenant] = useState(tenantsByProperty[properties[0].id][0]);
   const [file, setFile] = useState<File | null>(null);
   const [state, setState] = useState<UploadState>("idle");
 
-  const selectedProperty = properties.find((property) => property.id === propertyId) ?? properties[0];
+  const selectedProperty = propertyRows.find((property) => property.id === propertyId) ?? propertyRows[0] ?? properties[0];
   const leaseFileId = file ? `convex_file_${file.name.toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 28)}` : "convex_file_id";
   const eventId = file ? `evt_lease_${selectedProperty.id}_${leaseFileId.slice(-8)}` : `evt_lease_${selectedProperty.id}`;
 
   function handlePropertyChange(nextPropertyId: string) {
     setPropertyId(nextPropertyId);
-    setTenant(tenantsByProperty[nextPropertyId][0]);
+    setTenant(tenantsByProperty[nextPropertyId]?.[0] ?? "Demo tenant");
   }
 
   function handleFile(nextFile: File | null) {
@@ -36,9 +42,34 @@ export function LeaseUploadPanel({ compact = false }: { compact?: boolean }) {
     setState(nextFile ? "ready" : "idle");
   }
 
-  function simulateUpload() {
+  async function simulateUpload() {
     if (!file) return;
     setState("processing");
+    if (overview?.orgId !== undefined && selectedProperty.id.length > 8) {
+      const fileId = await createFileRecord({
+        orgId: overview.orgId as never,
+        propertyId: selectedProperty.id as never,
+        storageId: `demo-local:${file.name}`,
+        originalName: file.name,
+        contentType: file.type || "application/pdf",
+        sizeBytes: file.size,
+        purpose: "lease_pdf",
+      });
+      const agentBaseUrl = process.env.NEXT_PUBLIC_AGENT_SERVICE_URL ?? "http://localhost:8000";
+      await fetch(`${agentBaseUrl}/agents/contract/upload`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId,
+          orgId: "demo",
+          propertyId: selectedProperty.id,
+          source: "upload",
+          leaseFileId: fileId,
+        }),
+      });
+      setState("complete");
+      return;
+    }
     window.setTimeout(() => setState("complete"), 900);
   }
 
@@ -71,7 +102,7 @@ export function LeaseUploadPanel({ compact = false }: { compact?: boolean }) {
               onChange={(event) => handlePropertyChange(event.target.value)}
               className="mt-1 h-9 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400"
             >
-              {properties.map((property) => (
+              {propertyRows.map((property) => (
                 <option key={property.id} value={property.id}>
                   {property.address}
                 </option>
@@ -85,7 +116,7 @@ export function LeaseUploadPanel({ compact = false }: { compact?: boolean }) {
               onChange={(event) => setTenant(event.target.value)}
               className="mt-1 h-9 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400"
             >
-              {tenantsByProperty[propertyId].map((tenantName) => (
+              {(tenantsByProperty[propertyId] ?? selectedProperty.tenants ?? ["Demo tenant"]).map((tenantName) => (
                 <option key={tenantName} value={tenantName}>
                   {tenantName}
                 </option>

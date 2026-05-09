@@ -1,26 +1,40 @@
+"use client";
+
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { AgentBadge } from "@/components/ui/agent-badge";
 import { StatusPill } from "@/components/ui/status-pill";
 import { StatCard } from "@/components/shared/stat-card";
 import { agents, operations } from "@/lib/mock-data";
+import { Button } from "@/components/ui/button";
 
 export default function OverviewPage() {
-  const latest = operations.slice(0, 5);
+  const overview = useQuery(api.dashboard.getOverview, { orgSlug: "demo" });
+  const liveOperations = useQuery(api.dashboard.listOperations, { orgSlug: "demo", limit: 5 });
+  const liveAgents = useQuery(api.dashboard.listAgentsForDashboard, { orgSlug: "demo" });
+  const seedDemo = useMutation(api.demoSeed.ensureDemoData);
+  const latest = liveOperations ?? operations.slice(0, 5);
+  const agentRows = liveAgents ?? agents;
+  const stats = overview?.stats;
 
   return (
     <div className="space-y-6">
-      <section>
-        <h2 className="text-xl font-semibold tracking-tight">Operations overview</h2>
-        <p className="mt-1 text-sm text-zinc-500">Live control panel for agent-led property workflows and human approval gates.</p>
+      <section className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">Operations overview</h2>
+          <p className="mt-1 text-sm text-zinc-500">Live control panel for agent-led property workflows and human approval gates.</p>
+        </div>
+        <Button variant="outline" onClick={() => void seedDemo({})}>Seed demo data</Button>
       </section>
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Active workflows" value="14" detail="Lease, invoice, maintenance, and comms tasks" status="Running" />
-        <StatCard label="Pending approvals" value="5" detail="3 due today across reimbursements and scheduling" status="Awaiting approval" />
-        <StatCard label="Open maintenance jobs" value="3" detail="1 SLA at risk for AC leak" status="SLA at risk" />
-        <StatCard label="Expiring leases" value="4" detail="2 queued for CommsAgent calendar scheduling" status="Human review required" />
-        <StatCard label="Unread conversations" value="8" detail="WhatsApp, email, and voice transcripts" status="Ready to send" />
-        <StatCard label="Invoice claims pending" value="5" detail="2 low-confidence OCR results" status="OCR confidence low" />
-        <StatCard label="Agent health" value="96.2%" detail="Success rate across recent runs" status="Online" />
-        <StatCard label="SLA risks" value="1" detail="Vendor confirmation due by 18:00" status="SLA at risk" />
+        <StatCard label="Active workflows" value={String(stats?.activeWorkflows ?? 14)} detail="Lease, invoice, maintenance, and comms tasks" status="Running" />
+        <StatCard label="Pending approvals" value={String(stats?.pendingApprovals ?? 5)} detail="Reimbursements, extraction checks, and relisting reviews" status="Awaiting approval" />
+        <StatCard label="Open maintenance jobs" value={String(stats?.openMaintenance ?? 3)} detail="Contractor matching and vendor scheduling" status="SLA at risk" />
+        <StatCard label="Expiring leases" value={String(stats?.expiringLeases ?? 4)} detail="Queued for CommsAgent calendar scheduling" status="Human review required" />
+        <StatCard label="Unread conversations" value={String(stats?.unreadConversations ?? 8)} detail="WhatsApp, email, and voice transcripts" status="Ready to send" />
+        <StatCard label="Invoice claims pending" value={String(stats?.pendingInvoices ?? 5)} detail="OCR results waiting for review" status="OCR confidence low" />
+        <StatCard label="Agent health" value={`${stats?.agentHealth ?? 96.2}%`} detail="Success rate across recent runs" status="Online" />
+        <StatCard label="SLA risks" value={String(stats?.slaRisks ?? 1)} detail="High-priority tasks requiring attention" status="SLA at risk" />
       </section>
       <section className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr]">
         <div className="rounded-lg border border-zinc-200 bg-white">
@@ -46,7 +60,7 @@ export default function OverviewPage() {
         <div className="rounded-lg border border-zinc-200 bg-white p-4">
           <h3 className="text-sm font-semibold">Agent health summary</h3>
           <div className="mt-4 space-y-3">
-            {agents.map((agent) => (
+            {agentRows.map((agent) => (
               <div key={agent.name} className="flex items-center justify-between gap-3 rounded-md bg-zinc-50 p-3">
                 <div>
                   <AgentBadge agent={agent.name} />

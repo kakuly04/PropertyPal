@@ -1,5 +1,8 @@
 from agents import Agent, Runner, handoff
 
+from propertypal_agents.contract.agent import build_contract_agent
+from propertypal_agents.invoice.agent import build_invoice_agent
+
 from ..agents.comms_agent import build_comms_agent
 from ..agents.maintenance_agent import build_maintenance_agent
 from ..schemas import AgentRunRequest
@@ -19,13 +22,17 @@ def build_orchestrator_agent() -> Agent:
             "Never perform specialist work yourself. "
             "For tenant repair, leak, plumbing, electrical, cleaner, broken appliance, or maintenance messages, "
             "load demo context and hand off to MaintenanceAgent. "
-            "For direct human outreach or availability coordination, hand off to CommunicationsAgent. "
+            "For receipt, reimbursement, invoice, paid-by-tenant, or claim events, hand off to InvoiceAgent. "
+            "For lease PDF, lease extraction, lease expiry, renewal, or relisting events, hand off to ContractAgent. "
+            "For direct human outreach or availability coordination, hand off to CommsAgent. "
             "For this hackathon demo, use the seeded demo property and contacts without asking the user to confirm IDs."
         ),
         tools=[get_demo_context, record_agent_result],
         handoffs=[
             handoff(build_maintenance_agent()),
             handoff(build_comms_agent()),
+            handoff(build_invoice_agent()),
+            handoff(build_contract_agent()),
         ],
     )
 

@@ -1,23 +1,28 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FilterBar } from "@/components/shared/filter-bar";
 import { StatusPill } from "@/components/ui/status-pill";
 import { LeaseUploadPanel } from "@/components/documents/lease-upload-panel";
 import { properties, operations } from "@/lib/mock-data";
+import type { PropertyRecord } from "@/lib/types";
 
 const tabs = ["Overview", "Units", "Tenants", "Leases", "Maintenance", "Invoices", "Messages", "Documents", "Audit"];
 
 export default function PropertiesPage() {
   const [search, setSearch] = useState("");
+  const liveProperties = useQuery(api.dashboard.listPropertiesForDashboard, { orgSlug: "demo" });
+  const rows = (liveProperties ?? properties) as PropertyRecord[];
   const [selectedId, setSelectedId] = useState(properties[0].id);
   const [tab, setTab] = useState(tabs[0]);
   const filtered = useMemo(() => {
     const query = search.toLowerCase();
-    return properties.filter((property) => Object.values(property).join(" ").toLowerCase().includes(query));
-  }, [search]);
-  const selected = properties.find((property) => property.id === selectedId) ?? properties[0];
+    return rows.filter((property) => Object.values(property).join(" ").toLowerCase().includes(query));
+  }, [rows, search]);
+  const selected = rows.find((property) => property.id === selectedId) ?? rows[0] ?? properties[0];
 
   return (
     <div className="space-y-5">

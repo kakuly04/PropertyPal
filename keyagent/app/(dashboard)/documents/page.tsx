@@ -1,10 +1,18 @@
+"use client";
+
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DocumentSourceCard } from "@/components/documents/document-source-card";
+import { InvoiceUploadPanel } from "@/components/documents/invoice-upload-panel";
 import { LeaseUploadPanel } from "@/components/documents/lease-upload-panel";
 import { documents } from "@/lib/mock-data";
+import type { DocumentSource } from "@/lib/types";
 
 export default function DocumentsPage() {
+  const liveDocuments = useQuery(api.dashboard.listDocumentsForDashboard, { orgSlug: "demo" });
+  const rows = (liveDocuments ?? documents) as DocumentSource[];
   const categories = ["Lease PDFs", "Invoice PDFs/images", "Property photos", "Tenant correspondence", "Owner documents", "Contractor receipts"];
 
   return (
@@ -20,16 +28,17 @@ export default function DocumentsPage() {
         </Button>
       </section>
       <LeaseUploadPanel />
+      <InvoiceUploadPanel />
       <section className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
         {categories.map((category) => (
           <div key={category} className="rounded-lg border border-zinc-200 bg-white p-3">
             <div className="text-sm font-medium text-zinc-900">{category}</div>
-            <div className="mt-1 text-xs text-zinc-500">{documents.filter((document) => document.category === category).length} sources</div>
+            <div className="mt-1 text-xs text-zinc-500">{rows.filter((document) => document.category === category).length} sources</div>
           </div>
         ))}
       </section>
       <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-        {documents.map((document) => <DocumentSourceCard key={document.id} document={document} />)}
+        {rows.map((document) => <DocumentSourceCard key={document.id} document={document} />)}
       </section>
     </div>
   );
