@@ -1,5 +1,6 @@
 # KeyAgent Agent Service
 
+<<<<<<< Updated upstream
 Python FastAPI service for specialist agents.
 
 Run from the repo root:
@@ -75,4 +76,37 @@ Example contract payload:
   "leaseFileId": "convex_file_id",
   "tenantId": "convex_contact_id"
 }
+=======
+FastAPI service for the Python OpenAI Agents SDK layer.
+
+This first slice includes:
+
+- `CommunicationsAgent`
+- `MaintenanceAgent`
+- Placeholder tools for Convex, Resend, Twilio WhatsApp, ElevenLabs voice, and calendar scheduling
+
+## Run locally
+
+```bash
+cd agent_service
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+## Environment
+
+```bash
+OPENAI_API_KEY=
+KEYAGENT_AGENT_MODEL=gpt-4.1
+CONVEX_URL=
+CONVEX_SITE_URL=
+KEYAGENT_WEBHOOK_SECRET=
+RESEND_API_KEY=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_WHATSAPP_FROM=
+ELEVENLABS_API_KEY=
+>>>>>>> Stashed changes
 ```
