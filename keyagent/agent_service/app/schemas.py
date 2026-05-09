@@ -3,7 +3,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
-AgentName = Literal["CommunicationsAgent", "MaintenanceAgent", "OrchestratorAgent"]
+AgentName = Literal["CommsAgent", "MaintenanceAgent", "OrchestratorAgent", "InvoiceAgent", "ContractAgent"]
 
 
 class AgentRunRequest(BaseModel):
@@ -18,3 +18,16 @@ class AgentRunRequest(BaseModel):
 class AgentRunResponse(BaseModel):
     agent: AgentName
     output: str
+
+
+class AgentTaskProcessRequest(BaseModel):
+    org_id: str = "demo"
+    assigned_agent: AgentName | None = None
+
+
+class AgentTaskProcessResponse(BaseModel):
+    processed: bool
+    agent_task_id: str | None = None
+    assigned_agent: AgentName | None = None
+    output: str | None = None
+    error: str | None = None

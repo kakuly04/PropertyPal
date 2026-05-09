@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { AgentCard } from "@/components/agents/agent-card";
 import { AgentBadge } from "@/components/ui/agent-badge";
 import { StatusPill } from "@/components/ui/status-pill";
 import { agents, operations } from "@/lib/mock-data";
+import type { AgentRecord } from "@/lib/types";
 
 export default function AgentsPage() {
+  const liveAgents = useQuery(api.dashboard.listAgentsForDashboard, { orgSlug: "demo" });
+  const rows = (liveAgents ?? agents) as AgentRecord[];
   const [selectedName, setSelectedName] = useState(agents[0].name);
-  const selected = agents.find((agent) => agent.name === selectedName) ?? agents[0];
+  const selected = rows.find((agent) => agent.name === selectedName) ?? rows[0] ?? agents[0];
 
   return (
     <div className="space-y-5">
@@ -18,7 +23,7 @@ export default function AgentsPage() {
       </section>
       <section className="grid gap-4 xl:grid-cols-[1fr_420px]">
         <div className="grid gap-3 lg:grid-cols-2">
-          {agents.map((agent) => (
+          {rows.map((agent) => (
             <button key={agent.name} onClick={() => setSelectedName(agent.name)} className="block text-left">
               <AgentCard agent={agent} />
             </button>

@@ -85,7 +85,7 @@ http.route({
       return Response.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const result = await ctx.runMutation(api.seedData.seedDemoData, {});
+    const result = await ctx.runMutation(api.demoSeed.ensureDemoData, {});
     return Response.json({ ok: true, result });
   }),
 });
@@ -98,11 +98,11 @@ http.route({
       return Response.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    let context = await ctx.runQuery(api.seedData.getDemoContext, {});
+    let context = await ctx.runQuery(api.demoSeed.getDemoData, {});
 
     if (context === null) {
-      await ctx.runMutation(api.seedData.seedDemoData, {});
-      context = await ctx.runQuery(api.seedData.getDemoContext, {});
+      await ctx.runMutation(api.demoSeed.ensureDemoData, {});
+      context = await ctx.runQuery(api.demoSeed.getDemoData, {});
     }
 
     return Response.json({ ok: true, context });

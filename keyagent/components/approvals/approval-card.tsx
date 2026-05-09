@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import type { Approval } from "@/lib/types";
 import { AgentBadge } from "@/components/ui/agent-badge";
 import { StatusPill, statusTone } from "@/components/ui/status-pill";
@@ -8,6 +10,36 @@ import { Button } from "@/components/ui/button";
 
 export function ApprovalCard({ approval }: { approval: Approval }) {
   const [status, setStatus] = useState(approval.status);
+  const approveInvoice = useMutation(api.invoices.approveInvoice);
+  const rejectInvoice = useMutation(api.invoices.rejectInvoice);
+  const confirmLease = useMutation(api.leases.confirmLeaseExtraction);
+  const approveRelisting = useMutation(api.leases.approveRelistingDraft);
+  const approveGeneric = useMutation(api.approvals.approveRequest);
+  const rejectGeneric = useMutation(api.approvals.rejectRequest);
+
+  async function approve() {
+    const target = approval as Approval & { targetTable?: string; targetId?: string };
+    if (target.targetTable === "invoices" && target.targetId !== undefined) {
+      await approveInvoice({ invoiceId: target.targetId as never, approvalId: approval.id as never });
+    } else if (target.targetTable === "leases" && target.targetId !== undefined) {
+      await confirmLease({ leaseId: target.targetId as never, approvalId: approval.id as never });
+    } else if (target.targetTable === "relistingDrafts" && target.targetId !== undefined) {
+      await approveRelisting({ relistingDraftId: target.targetId as never, approvalId: approval.id as never });
+    } else {
+      await approveGeneric({ approvalId: approval.id as never });
+    }
+    setStatus("Approved");
+  }
+
+  async function reject() {
+    const target = approval as Approval & { targetTable?: string; targetId?: string };
+    if (target.targetTable === "invoices" && target.targetId !== undefined) {
+      await rejectInvoice({ invoiceId: target.targetId as never, approvalId: approval.id as never });
+    } else {
+      await rejectGeneric({ approvalId: approval.id as never });
+    }
+    setStatus("Rejected");
+  }
 
   return (
     <article className="rounded-lg border border-zinc-200 bg-white p-4">
@@ -28,8 +60,8 @@ export function ApprovalCard({ approval }: { approval: Approval }) {
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          <Button size="sm" onClick={() => setStatus("Approved")}>Approve</Button>
-          <Button size="sm" variant="outline" onClick={() => setStatus("Rejected")}>Reject</Button>
+          <Button size="sm" onClick={() => void approve()}>Approve</Button>
+          <Button size="sm" variant="outline" onClick={() => void reject()}>Reject</Button>
           <Button size="sm" variant="outline" onClick={() => setStatus("Changes requested")}>Request Changes</Button>
         </div>
       </div>

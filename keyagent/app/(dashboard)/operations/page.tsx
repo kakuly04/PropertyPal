@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { OperationFeedItem } from "@/components/operations/operation-feed-item";
 import { WorkflowDetailDrawer } from "@/components/operations/workflow-detail-drawer";
 import { FilterBar } from "@/components/shared/filter-bar";
@@ -10,10 +12,12 @@ import type { Operation } from "@/lib/types";
 export default function OperationsPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Operation | null>(null);
+  const liveOperations = useQuery(api.dashboard.listOperations, { orgSlug: "demo", limit: 50 });
+  const rows = (liveOperations ?? operations) as Operation[];
   const filtered = useMemo(() => {
     const query = search.toLowerCase();
-    return operations.filter((operation) => Object.values(operation).join(" ").toLowerCase().includes(query));
-  }, [search]);
+    return rows.filter((operation) => Object.values(operation).join(" ").toLowerCase().includes(query));
+  }, [rows, search]);
 
   return (
     <div className="space-y-5">

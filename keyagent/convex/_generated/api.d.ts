@@ -15,6 +15,7 @@ import type * as auditLogs from "../auditLogs.js";
 import type * as contacts from "../contacts.js";
 import type * as conversations from "../conversations.js";
 import type * as crons from "../crons.js";
+import type * as dashboard from "../dashboard.js";
 import type * as demoSeed from "../demoSeed.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   contacts: typeof contacts;
   conversations: typeof conversations;
   crons: typeof crons;
+  dashboard: typeof dashboard;
   demoSeed: typeof demoSeed;
   files: typeof files;
   http: typeof http;
